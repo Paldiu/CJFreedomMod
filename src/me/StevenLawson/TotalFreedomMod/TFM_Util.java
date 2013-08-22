@@ -25,8 +25,8 @@ public class TFM_Util
     public static final Map<String, EntityType> mobtypes = new HashMap<String, EntityType>();
     public static final List<String> STOP_COMMANDS = Arrays.asList("stop", "off", "end", "halt", "die");
     public static final List<String> REMOVE_COMMANDS = Arrays.asList("del", "delete", "rem", "remove");
-    public static final List<String> DEVELOPERS = Arrays.asList("Madgeek1450", "DarthSalamon", "AcidicCyanide", "wild1145", "HeXeRei452", "disaster839");
-
+    public static final List<String> DEVELOPERS = Arrays.asList("Madgeek1450", "DarthSalamon","wild1145", "HeXeRei452");
+    public static final List<String> SYSADMINS = Arrays.asList("wild1145", "Varuct", "thecjgcjg", "DarthSalamon", "RoseMax122");
     static
     {
         for (EntityType entity_type : EntityType.values())
