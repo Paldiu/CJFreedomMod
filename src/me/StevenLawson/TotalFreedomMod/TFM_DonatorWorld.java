@@ -38,7 +38,6 @@ public class TFM_DonatorWorld
         {
             return;
         }
-        
         else if (!TFM_Util.SYSADMINS.contains(player.getName()))
         {
             return;
@@ -54,7 +53,7 @@ public class TFM_DonatorWorld
             if (event.getTo().getWorld() == donatorworld)
             {
                 final Player player = event.getPlayer();
-                if (!cachedIsUserSuperadmin(player))
+                if (!cachedIsUserDonator(player))
                 {
                     Long lastTP = teleportCooldown.get(player);
                     long currentTimeMillis = System.currentTimeMillis();
@@ -95,7 +94,7 @@ public class TFM_DonatorWorld
         superadminCache.clear();
     }
 
-    private boolean cachedIsUserSuperadmin(CommandSender user)
+    private boolean cachedIsUserDonator(CommandSender user)
     {
         long currentTimeMillis = System.currentTimeMillis();
         if (cacheLastCleared == null || cacheLastCleared.longValue() + CACHE_CLEAR_FREQUENCY <= currentTimeMillis)
