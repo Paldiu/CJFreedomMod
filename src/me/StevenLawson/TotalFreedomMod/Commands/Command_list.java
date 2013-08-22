@@ -91,7 +91,7 @@ public class Command_list extends TFM_Command
                 
                 if (player.getName().equalsIgnoreCase("thecjgcjg"))
                 {
-                    prefix = (ChatColor.DARK_PURPLE + "[Retired Owner & System Admin]");
+                    prefix = (ChatColor.DARK_PURPLE + "[Retired Owner & Lord of the scum!]");
                 }
                 if (player.getName().equalsIgnoreCase("DarthSalamon"))
                 {

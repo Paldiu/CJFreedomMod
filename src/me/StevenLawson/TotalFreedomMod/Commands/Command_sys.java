@@ -18,11 +18,12 @@ public class Command_sys extends TFM_Command
     public boolean run(final CommandSender sender, Player sender_p, Command cmd, String commandLabel, String[] args, boolean senderIsConsole)
     {
 
-        if (!sender.getName().equalsIgnoreCase("wild1145") || !sender.getName().equalsIgnoreCase("varuct") || !sender.getName().equalsIgnoreCase("pvpveract"))
-        {
-            playerMsg(TotalFreedomMod.MSG_NO_PERMS);
-            return true;
-        }
+        if (!TFM_Util.SYSADMINS.contains(sender.getName()))
+            {
+                sender.sendMessage(TotalFreedomMod.MSG_NO_PERMS);
+                return true;
+            }
+
 
         if (args.length == 1)
         {
