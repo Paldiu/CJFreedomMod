@@ -86,12 +86,12 @@ public class Command_list extends TFM_Command
                 
                 if (p.getName().equalsIgnoreCase("wild1145"))
                 {
-                    prefix = (ChatColor.DARK_GREEN + "[Chief-Developer]");
+                    prefix = (ChatColor.DARK_GREEN + "[Chief Developer & System Admin]");
                 }
                 
                 if (p.getName().equalsIgnoreCase("thecjgcjg"))
                 {
-                    prefix = (ChatColor.DARK_PURPLE + "[Retired-Owner]");
+                    prefix = (ChatColor.DARK_PURPLE + "[Retired Owner & System Admin]");
                 }
                 if (p.getName().equalsIgnoreCase("DarthSalamon"))
                 {
@@ -105,22 +105,22 @@ public class Command_list extends TFM_Command
                 
                  if (p.getName().equalsIgnoreCase("markbyron"))
                 {
-                    prefix = (ChatColor.GREEN + "[TF-Owner]");
+                    prefix = (ChatColor.GREEN + "[TF Owner]");
                 }
                 
                 if (p.getName().equalsIgnoreCase("phoenix411"))
                 {
-                    prefix = (ChatColor.DARK_AQUA + "[Chief-Of-Security]");
+                    prefix = (ChatColor.DARK_AQUA + "[Chief Of Security]");
                 }
                 
                 if (p.getName().equalsIgnoreCase("rosemax122"))
                 {
-                    prefix = (ChatColor.DARK_AQUA + "[Admin-Manager]");
+                    prefix = (ChatColor.DARK_AQUA + "[Admin-Manager & System Admin]");
                 }
                 
-                if (p.getName().equalsIgnoreCase("fluffasaurus_rex"))
+                if (p.getName().equalsIgnoreCase("lynxlps"))
                 {
-                    prefix = (ChatColor.DARK_AQUA + "[Creative-Designer]");
+                    prefix = (ChatColor.DARK_AQUA + "[Admin Trainer]");
                 }
 
             }         
@@ -153,7 +153,7 @@ public class Command_list extends TFM_Command
 
             }    
             
-            boolean usersradminDonator = TFM_DonatorList.isUserDonator(p);
+            boolean usersradminDonator = TFM_DonatorList.isUserDonator(p) && TFM_SuperadminList.isUserSuperadmin(p);
 
             if (listFilter == ListFilter.SHOW_DONATORS && !usersradminDonator)
             {
@@ -173,7 +173,7 @@ public class Command_list extends TFM_Command
 
             } 
             
-            boolean useradminDonator = TFM_DonatorList.isUserDonator(p);
+            boolean useradminDonator = TFM_DonatorList.isUserDonator(p) && TFM_SuperadminList.isUserSuperadmin(p);
 
             if (listFilter == ListFilter.SHOW_DONATORS && !useradminDonator)
             {
