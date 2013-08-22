@@ -218,7 +218,9 @@ public class TFM_PlayerListener implements Listener
     public void onPlayerTeleport(PlayerTeleportEvent event)
     {
         TFM_AdminWorld.getInstance().validateMovement(event);
+        TFM_DonatorWorld.getInstance().validateMovement(event);
     }
+    
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event)
@@ -238,6 +240,10 @@ public class TFM_PlayerListener implements Listener
         }
 
         if (!TFM_AdminWorld.getInstance().validateMovement(event))
+        {
+            return;
+        }
+        if (!TFM_DonatorWorld.getInstance().validateMovement(event))
         {
             return;
         }
