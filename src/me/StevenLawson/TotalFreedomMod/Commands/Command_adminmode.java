@@ -1,8 +1,8 @@
 package me.StevenLawson.TotalFreedomMod.Commands;
 
+import me.StevenLawson.TotalFreedomMod.TFM_ConfigEntry;
 import me.StevenLawson.TotalFreedomMod.TFM_SuperadminList;
 import me.StevenLawson.TotalFreedomMod.TFM_Util;
-import me.StevenLawson.TotalFreedomMod.TotalFreedomMod;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,19 +21,19 @@ public class Command_adminmode extends TFM_Command
 
         if (args[0].equalsIgnoreCase("off"))
         {
-            TotalFreedomMod.adminOnlyMode = false;
+            TFM_ConfigEntry.ADMIN_ONLY_MODE.setBoolean(false);
             TFM_Util.adminAction(sender.getName(), "Opening the server to all players.", true);
             return true;
         }
         else if (args[0].equalsIgnoreCase("on"))
         {
-            TotalFreedomMod.adminOnlyMode = true;
+            TFM_ConfigEntry.ADMIN_ONLY_MODE.setBoolean(true);
             TFM_Util.adminAction(sender.getName(), "Closing the server to non-superadmins.", true);
-            for (Player p : server.getOnlinePlayers())
+            for (Player player : server.getOnlinePlayers())
             {
-                if (!TFM_SuperadminList.isUserSuperadmin(p))
+                if (!TFM_SuperadminList.isUserSuperadmin(player))
                 {
-                    p.kickPlayer("Server is now closed to non-superadmins.");
+                    player.kickPlayer("Server is now closed to non-superadmins.");
                 }
             }
             return true;

@@ -9,6 +9,7 @@ public class TFM_Heartbeat extends BukkitRunnable
 {
     private final TotalFreedomMod plugin;
     private final Server server;
+    private static Long lastRan = null;
 
     public TFM_Heartbeat(TotalFreedomMod instance)
     {
@@ -16,23 +17,30 @@ public class TFM_Heartbeat extends BukkitRunnable
         this.server = plugin.getServer();
     }
 
+    public static Long getLastRan()
+    {
+        return lastRan;
+    }
+
     @Override
     public void run()
     {
-        for (Player p : server.getOnlinePlayers())
+        lastRan = System.currentTimeMillis();
+
+        for (Player player : server.getOnlinePlayers())
         {
-            TFM_PlayerData playerdata = TFM_PlayerData.getPlayerData(p);
+            TFM_PlayerData playerdata = TFM_PlayerData.getPlayerData(player);
             playerdata.resetMsgCount();
             playerdata.resetBlockDestroyCount();
             playerdata.resetBlockPlaceCount();
         }
 
-        if (TotalFreedomMod.autoEntityWipe)
+        if (TFM_ConfigEntry.AUTO_ENTITY_WIPE.getBoolean())
         {
-            TFM_Util.TFM_EntityWiper.wipeEntities(!TotalFreedomMod.allowExplosions, false);
+            TFM_Util.TFM_EntityWiper.wipeEntities(!TFM_ConfigEntry.ALLOW_EXPLOSIONS.getBoolean(), false);
         }
 
-        if (TotalFreedomMod.disableWeather)
+        if (TFM_ConfigEntry.DISABLE_WEATHER.getBoolean())
         {
             for (World world : server.getWorlds())
             {

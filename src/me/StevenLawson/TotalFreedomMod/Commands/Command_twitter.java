@@ -1,5 +1,6 @@
 package me.StevenLawson.TotalFreedomMod.Commands;
 
+import me.StevenLawson.TotalFreedomMod.TFM_ConfigEntry;
 import me.StevenLawson.TotalFreedomMod.TFM_TwitterHandler;
 import me.StevenLawson.TotalFreedomMod.TFM_Util;
 import me.StevenLawson.TotalFreedomMod.TotalFreedomMod;
@@ -15,7 +16,7 @@ public class Command_twitter extends TFM_Command
     @Override
     public boolean run(CommandSender sender, Player sender_p, Command cmd, String commandLabel, String[] args, boolean senderIsConsole)
     {
-        if (!TotalFreedomMod.twitterbotEnabled)
+        if (!TFM_ConfigEntry.TWITTERBOT_ENABLED.getBoolean())
         {
             TFM_Util.playerMsg(sender, "TwitterBot has been disabled in config.", ChatColor.RED);
             return true;
@@ -26,7 +27,7 @@ public class Command_twitter extends TFM_Command
             return false;
         }
 
-        TFM_TwitterHandler twitterbot = TFM_TwitterHandler.getInstance(plugin);
+        TFM_TwitterHandler twitterbot = TFM_TwitterHandler.getInstance();
 
         if ("set".equals(args[0]))
         {
@@ -81,9 +82,8 @@ public class Command_twitter extends TFM_Command
             String reply = twitterbot.getTwitter(sender.getName());
             TFM_Util.playerMsg(sender, "-- Twitter Information --", ChatColor.BLUE);
             TFM_Util.playerMsg(sender, "Using this feature, you can re-super yourself using twitter.");
-            TFM_Util.playerMsg(sender, "You may need to tweet out more than once as the server does not always respond!");
             TFM_Util.playerMsg(sender, "You can set your twitter handle using " + ChatColor.AQUA + "/twitter set [twittername]");
-            TFM_Util.playerMsg(sender, "Then, you can verify yourself by tweeting " + ChatColor.AQUA + "@CJFUpdates #superme");
+            TFM_Util.playerMsg(sender, "Then, you can verify yourself by tweeting " + ChatColor.AQUA + "@TFUpdates #superme");
             if ("notfound".equals(reply))
             {
                 TFM_Util.playerMsg(sender, "You currently have " + ChatColor.RED + "no" + ChatColor.BLUE + " Twitter handle set.", ChatColor.BLUE);
@@ -113,14 +113,11 @@ public class Command_twitter extends TFM_Command
 
         if ("enable".equals(args[0]) || "disable".equals(args[0]))
         {
-           if (!sender.getName().equalsIgnoreCase("Wild1145")) {
-  if((!TFM_Util.DEVELOPERS.contains(sender.getName())))
-      
+            if (!sender.getName().equalsIgnoreCase("DarthSalamon"))
             {
                 sender.sendMessage(TotalFreedomMod.MSG_NO_PERMS);
                 return true;
             }
-           }
 
             TFM_Util.adminAction(sender.getName(), ("enable".equals(args[0]) ? "Ena" : "Disa") + "bling Twitterbot", true);
             String reply = twitterbot.setEnabled(args[0] + "d");

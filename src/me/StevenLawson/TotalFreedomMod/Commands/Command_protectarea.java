@@ -1,7 +1,8 @@
 package me.StevenLawson.TotalFreedomMod.Commands;
 
+import me.StevenLawson.TotalFreedomMod.TFM_ConfigEntry;
 import me.StevenLawson.TotalFreedomMod.TFM_ProtectedArea;
-import me.StevenLawson.TotalFreedomMod.TotalFreedomMod;
+import me.StevenLawson.TotalFreedomMod.TFM_Util;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,7 +17,7 @@ public class Command_protectarea extends TFM_Command
     @Override
     public boolean run(CommandSender sender, Player sender_p, Command cmd, String commandLabel, String[] args, boolean senderIsConsole)
     {
-        if (!TotalFreedomMod.protectedAreasEnabled)
+        if (!TFM_ConfigEntry.PROTECTED_AREAS_ENABLED.getBoolean())
         {
             playerMsg("Protected areas are currently disabled in the TotalFreedomMod configuration.");
             return true;
@@ -43,7 +44,7 @@ public class Command_protectarea extends TFM_Command
         }
         else if (args.length == 2)
         {
-            if (args[0].equalsIgnoreCase("remove"))
+            if (TFM_Util.isRemoveCommand(args[0]))
             {
                 TFM_ProtectedArea.removeProtectedArea(args[1]);
 

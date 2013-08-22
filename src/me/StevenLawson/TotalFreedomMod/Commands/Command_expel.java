@@ -5,7 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandPermissions(level = AdminLevel.OP, dlevel = DonatorLevel.STANDARD, source = SourceType.ONLY_IN_GAME)
+@CommandPermissions(level = AdminLevel.SUPER, source = SourceType.ONLY_IN_GAME)
 @CommandParameters(description = "Push people away from you.", usage = "/<command> [radius] [strength]")
 public class Command_expel extends TFM_Command
 {
@@ -38,16 +38,16 @@ public class Command_expel extends TFM_Command
         }
 
         Location sender_pos = sender_p.getLocation();
-        for (Player p : sender_pos.getWorld().getPlayers())
+        for (Player player : sender_pos.getWorld().getPlayers())
         {
-            if (!p.equals(sender_p))
+            if (!player.equals(sender_p))
             {
-                Location target_pos = p.getLocation();
+                Location targetPos = player.getLocation();
 
                 boolean in_range = false;
                 try
                 {
-                    in_range = target_pos.distanceSquared(sender_pos) < (radius * radius);
+                    in_range = targetPos.distanceSquared(sender_pos) < (radius * radius);
                 }
                 catch (IllegalArgumentException ex)
                 {
@@ -55,8 +55,8 @@ public class Command_expel extends TFM_Command
 
                 if (in_range)
                 {
-                    p.setVelocity(target_pos.clone().subtract(sender_pos).toVector().normalize().multiply(strength));
-                    playerMsg("Pushing " + p.getName() + ".");
+                    player.setVelocity(targetPos.clone().subtract(sender_pos).toVector().normalize().multiply(strength));
+                    playerMsg("Pushing " + player.getName() + ".");
                 }
             }
         }

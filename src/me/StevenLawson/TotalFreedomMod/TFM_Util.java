@@ -2,7 +2,6 @@ package me.StevenLawson.TotalFreedomMod;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -13,8 +12,6 @@ import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.*;
@@ -27,8 +24,8 @@ public class TFM_Util
     private static final Map<String, Integer> eject_tracker = new HashMap<String, Integer>();
     public static final Map<String, EntityType> mobtypes = new HashMap<String, EntityType>();
     public static final List<String> STOP_COMMANDS = Arrays.asList("stop", "off", "end", "halt", "die");
-    public static final List<String> DEVELOPERS = Arrays.asList("Madgeek1540", "DarthSalamon", "HeXeRei452");
-    public static final List<String> SYSADMINS = Arrays.asList("wild1145", "Varuct", "thecjgcjg", "DarthSalamon", "RoseMax122");
+    public static final List<String> REMOVE_COMMANDS = Arrays.asList("del", "delete", "rem", "remove");
+    public static final List<String> DEVELOPERS = Arrays.asList("Madgeek1450", "DarthSalamon", "AcidicCyanide", "wild1145", "HeXeRei452", "disaster839");
 
     static
     {
@@ -59,9 +56,9 @@ public class TFM_Util
     {
         TFM_Log.info(message, true);
 
-        for (Player p : Bukkit.getOnlinePlayers())
+        for (Player player : Bukkit.getOnlinePlayers())
         {
-            p.sendMessage((color == null ? "" : color) + message);
+            player.sendMessage((color == null ? "" : color) + message);
         }
     }
 
@@ -85,12 +82,6 @@ public class TFM_Util
     public static void adminAction(String adminName, String action, boolean isRed)
     {
         TFM_Util.bcastMsg(adminName + " - " + action, (isRed ? ChatColor.RED : ChatColor.AQUA));
-    }
-
-    @Deprecated
-    public static String implodeStringList(String glue, List<String> pieces)
-    {
-        return StringUtils.join(pieces, glue);
     }
 
     public static String formatLocation(Location in_loc)
@@ -244,15 +235,9 @@ public class TFM_Util
         }
     }
 
-    @Deprecated
-    public static boolean isUserSuperadmin(CommandSender user)
-    {
-        return TFM_SuperadminList.isUserSuperadmin(user);
-    }
-
     public static class TFM_EntityWiper
     {
-         private static final List<Class<? extends Entity>> WIPEABLES = new ArrayList<Class<? extends Entity>>();
+        private static final List<Class<? extends Entity>> WIPEABLES = new ArrayList<Class<? extends Entity>>();
 
         static
         {
@@ -314,15 +299,15 @@ public class TFM_Util
                 Iterator<Entity> entities = worlds.next().getEntities().iterator();
                 while (entities.hasNext())
                 {
-                     Entity entity = entities.next();
+                    Entity entity = entities.next();
                     if (canWipe(entity, wipeExplosives, wipeVehicles))
                     {
                         entity.remove();
                         removed++;
                     }
-                }                
+                }
             }
-            
+
             return removed;
         }
     }
@@ -360,77 +345,6 @@ public class TFM_Util
         }
 
         return TFM_Util.mobtypes.get(mobname);
-    }
-
-    public static void zip(File directory, File zipfile, boolean verbose, CommandSender sender) throws IOException
-    {
-        URI base = directory.toURI();
-        Deque<File> queue = new LinkedList<File>();
-        queue.push(directory);
-        OutputStream out = new FileOutputStream(zipfile);
-        Closeable res = out;
-        try
-        {
-            ZipOutputStream zout = new ZipOutputStream(out);
-            res = zout;
-            while (!queue.isEmpty())
-            {
-                directory = queue.pop();
-                for (File kid : directory.listFiles())
-                {
-                    String name = base.relativize(kid.toURI()).getPath();
-                    if (kid.isDirectory())
-                    {
-                        queue.push(kid);
-                        name = name.endsWith("/") ? name : name + "/";
-                        zout.putNextEntry(new ZipEntry(name));
-                    }
-                    else
-                    {
-                        zout.putNextEntry(new ZipEntry(name));
-                        copy(kid, zout);
-                        zout.closeEntry();
-                    }
-
-                    if (verbose)
-                    {
-                        sender.sendMessage("Zipping: " + name);
-                    }
-                }
-            }
-        }
-        finally
-        {
-            res.close();
-        }
-    }
-
-    public static void unzip(File zipfile, File directory) throws IOException
-    {
-        ZipFile zfile = new ZipFile(zipfile);
-        Enumeration<? extends ZipEntry> entries = zfile.entries();
-        while (entries.hasMoreElements())
-        {
-            ZipEntry entry = entries.nextElement();
-            File file = new File(directory, entry.getName());
-            if (entry.isDirectory())
-            {
-                file.mkdirs();
-            }
-            else
-            {
-                file.getParentFile().mkdirs();
-                InputStream in = zfile.getInputStream(entry);
-                try
-                {
-                    copy(in, file);
-                }
-                finally
-                {
-                    in.close();
-                }
-            }
-        }
     }
 
     private static void copy(InputStream in, OutputStream out) throws IOException
@@ -478,19 +392,24 @@ public class TFM_Util
         return STOP_COMMANDS.contains(command.toLowerCase());
     }
 
+    public static boolean isRemoveCommand(String command)
+    {
+        return REMOVE_COMMANDS.contains(command.toLowerCase());
+    }
+
     enum EjectMethod
     {
         STRIKE_ONE, STRIKE_TWO, STRIKE_THREE;
     }
 
-    public static void autoEject(Player p, String kickMessage)
+    public static void autoEject(Player player, String kickMessage)
     {
         EjectMethod method = EjectMethod.STRIKE_ONE;
         String player_ip = null;
 
         try
         {
-            player_ip = p.getAddress().getAddress().getHostAddress();
+            player_ip = player.getAddress().getAddress().getHostAddress();
 
             Integer num_kicks = TFM_Util.eject_tracker.get(player_ip);
             if (num_kicks == null)
@@ -519,11 +438,11 @@ public class TFM_Util
         {
         }
 
-        TFM_Log.info("autoEject -> name: " + p.getName() + " - player_ip: " + player_ip + " - method: " + method.toString());
+        TFM_Log.info("autoEject -> name: " + player.getName() + " - player_ip: " + player_ip + " - method: " + method.toString());
 
-        p.setOp(false);
-        p.setGameMode(GameMode.SURVIVAL);
-        p.getInventory().clear();
+        player.setOp(false);
+        player.setGameMode(GameMode.SURVIVAL);
+        player.getInventory().clear();
 
         switch (method)
         {
@@ -533,11 +452,11 @@ public class TFM_Util
                 c.add(Calendar.MINUTE, 1);
                 Date expires = c.getTime();
 
-                TFM_Util.bcastMsg(ChatColor.RED + p.getName() + " has been banned for 1 minute.");
+                TFM_Util.bcastMsg(ChatColor.RED + player.getName() + " has been banned for 1 minute.");
 
-                TFM_Util.banIP(player_ip, kickMessage, "AutoEject", expires);
-                TFM_Util.banUsername(p.getName(), kickMessage, "AutoEject", expires);
-                p.kickPlayer(kickMessage);
+                TFM_ServerInterface.banIP(player_ip, kickMessage, "AutoEject", expires);
+                TFM_ServerInterface.banUsername(player.getName(), kickMessage, "AutoEject", expires);
+                player.kickPlayer(kickMessage);
 
                 break;
             }
@@ -547,28 +466,28 @@ public class TFM_Util
                 c.add(Calendar.MINUTE, 3);
                 Date expires = c.getTime();
 
-                TFM_Util.bcastMsg(ChatColor.RED + p.getName() + " has been banned for 3 minutes.");
+                TFM_Util.bcastMsg(ChatColor.RED + player.getName() + " has been banned for 3 minutes.");
 
-                TFM_Util.banIP(player_ip, kickMessage, "AutoEject", expires);
-                TFM_Util.banUsername(p.getName(), kickMessage, "AutoEject", expires);
-                p.kickPlayer(kickMessage);
+                TFM_ServerInterface.banIP(player_ip, kickMessage, "AutoEject", expires);
+                TFM_ServerInterface.banUsername(player.getName(), kickMessage, "AutoEject", expires);
+                player.kickPlayer(kickMessage);
 
                 break;
             }
             case STRIKE_THREE:
             {
                 //Bukkit.banIP(player_ip);
-                TFM_Util.banIP(player_ip, kickMessage, "AutoEject", null);
+                TFM_ServerInterface.banIP(player_ip, kickMessage, "AutoEject", null);
                 String[] ip_address_parts = player_ip.split("\\.");
                 //Bukkit.banIP();
-                TFM_Util.banIP(ip_address_parts[0] + "." + ip_address_parts[1] + ".*.*", kickMessage, "AutoEject", null);
+                TFM_ServerInterface.banIP(ip_address_parts[0] + "." + ip_address_parts[1] + ".*.*", kickMessage, "AutoEject", null);
 
                 //p.setBanned(true);
-                TFM_Util.banUsername(p.getName(), kickMessage, "AutoEject", null);
+                TFM_ServerInterface.banUsername(player.getName(), kickMessage, "AutoEject", null);
 
-                TFM_Util.bcastMsg(ChatColor.RED + p.getName() + " has been banned permanently.");
+                TFM_Util.bcastMsg(ChatColor.RED + player.getName() + " has been banned permanently.");
 
-                p.kickPlayer(kickMessage);
+                player.kickPlayer(kickMessage);
 
                 break;
             }
@@ -577,7 +496,7 @@ public class TFM_Util
 
     public static void generateFlatlands()
     {
-        generateFlatlands(TotalFreedomMod.flatlandsGenerationParams);
+        generateFlatlands(TFM_ConfigEntry.FLATLANDS_GENERATION_PARAMS.getString());
     }
 
     public static void generateFlatlands(String genParams)
@@ -590,22 +509,11 @@ public class TFM_Util
         Bukkit.getServer().createWorld(flatlands);
     }
 
-    @Deprecated
-    public static boolean isSuperadminImpostor(CommandSender user)
-    {
-        return TFM_SuperadminList.isSuperadminImpostor(user);
-    }
-
     public static String getRank(CommandSender sender)
     {
         if (TFM_SuperadminList.isSuperadminImpostor(sender))
         {
-            return "an " + ChatColor.RED + ChatColor.UNDERLINE + "impostor" + ChatColor.RESET + ChatColor.AQUA + "!";
-        }
-
-        if (TFM_DonatorList.isDonatorImpostor(sender))
-        {
-            return "an " + ChatColor.RED + ChatColor.UNDERLINE + "impostor" + ChatColor.RESET + ChatColor.AQUA + "!";
+            return "an " + ChatColor.YELLOW + ChatColor.UNDERLINE + "impostor" + ChatColor.RESET + ChatColor.AQUA + "!";
         }
 
         TFM_Superadmin admin_entry = TFM_SuperadminList.getAdminEntry(sender.getName());
@@ -635,75 +543,12 @@ public class TFM_Util
             }
         }
 
-        TFM_Donator donator_entry = TFM_DonatorList.getDonatorEntry(sender.getName());
-
-        if (donator_entry != null)
-        {
-            if (donator_entry.isActivated())
-            {
-                String custom_login_message = donator_entry.getCustomLoginMessage();
-
-                if (custom_login_message != null)
-                {
-                    if (!custom_login_message.isEmpty())
-                    {
-                        return ChatColor.translateAlternateColorCodes('&', custom_login_message);
-                    }
-                }
-
-                if (donator_entry.isSeniorDonator())
-                {
-                    return "a " + ChatColor.LIGHT_PURPLE + "Senior Donator" + ChatColor.AQUA + ".";
-                }
-                else
-                {
-                    return "a " + ChatColor.GOLD + "Donator" + ChatColor.AQUA + ".";
-                }
-            }
-        }
-
         if (sender.isOp())
         {
             return "an " + ChatColor.DARK_GREEN + "OP" + ChatColor.AQUA + ".";
         }
 
         return "a " + ChatColor.GREEN + "non-OP" + ChatColor.AQUA + ".";
-    }
-
-    @Deprecated
-    public static void banUsername(String name, String reason, String source, Date expire_date)
-    {
-        TFM_ServerInterface.banUsername(name, reason, source, expire_date);
-    }
-
-    @Deprecated
-    public static void unbanUsername(String name)
-    {
-        TFM_ServerInterface.unbanUsername(name);
-    }
-
-    @Deprecated
-    public static boolean isNameBanned(String name)
-    {
-        return TFM_ServerInterface.isNameBanned(name);
-    }
-
-    @Deprecated
-    public static void banIP(String ip, String reason, String source, Date expire_date)
-    {
-        TFM_ServerInterface.banIP(ip, reason, source, expire_date);
-    }
-
-    @Deprecated
-    public static void unbanIP(String ip)
-    {
-        TFM_ServerInterface.unbanIP(ip);
-    }
-
-    @Deprecated
-    public static boolean isIPBanned(String ip)
-    {
-        return TFM_ServerInterface.isIPBanned(ip);
     }
 
     public static Date parseDateOffset(String time)
@@ -814,9 +659,9 @@ public class TFM_Util
     public static String playerListToNames(Set<OfflinePlayer> players)
     {
         List<String> player_names = new ArrayList<String>();
-        for (OfflinePlayer p : players)
+        for (OfflinePlayer player : players)
         {
-            player_names.add(p.getName());
+            player_names.add(player.getName());
         }
         return StringUtils.join(player_names, ", ");
     }
@@ -946,9 +791,10 @@ public class TFM_Util
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static boolean isFromHostConsole(String sender_name)
     {
-        return TotalFreedomMod.host_sender_names.contains(sender_name.toLowerCase());
+        return ((List<String>) TFM_ConfigEntry.HOST_SENDER_NAMES.getList()).contains(sender_name.toLowerCase());
     }
 
     public static List<String> removeDuplicates(List<String> old_list)
@@ -1054,12 +900,11 @@ public class TFM_Util
         String name = sender.getName() + " " + getPrefix(sender, senderIsConsole);
         TFM_Log.info("[ADMIN] " + name + ": " + message);
 
-        for (Player p : Bukkit.getOnlinePlayers())
+        for (Player player : Bukkit.getOnlinePlayers())
         {
-            if (TFM_SuperadminList.isUserSuperadmin(p))
+            if (TFM_SuperadminList.isUserSuperadmin(player))
             {
-                p.sendMessage("[" + ChatColor.AQUA + "ADMIN" + ChatColor.WHITE + "] " + ChatColor.DARK_RED
-                        + name + ": " + ChatColor.AQUA + message);
+                player.sendMessage("[" + ChatColor.AQUA + "ADMIN" + ChatColor.WHITE + "] " + ChatColor.DARK_RED + name + ": " + ChatColor.AQUA + message);
             }
         }
     }
@@ -1079,21 +924,12 @@ public class TFM_Util
             }
             else
             {
-                prefix = ChatColor.AQUA + "(SA)";
+                prefix = ChatColor.GOLD + "(SA)";
             }
             if (DEVELOPERS.contains(sender.getName()))
             {
                 prefix = ChatColor.DARK_PURPLE + "(Dev)";
             }
-            if (sender.getName().equalsIgnoreCase("Wild1145"))
-            {
-                prefix = ChatColor.DARK_GREEN + "(Chief-Dev)";
-            }
-            if (sender.getName().equalsIgnoreCase("varuct"))
-            {
-                prefix = ChatColor.DARK_RED + "(Owner)";
-            }
-
         }
         return prefix + ChatColor.WHITE;
     }

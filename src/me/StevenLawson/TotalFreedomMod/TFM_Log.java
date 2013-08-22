@@ -2,54 +2,81 @@ package me.StevenLawson.TotalFreedomMod;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.Bukkit;
 
 public class TFM_Log
 {
-    private static final Logger logger = Bukkit.getLogger();
+    private static final Logger FALLBACK_LOGGER = Logger.getLogger("Minecraft-Server");
+    private static Logger serverLogger = null;
+    private static Logger pluginLogger = null;
 
     private TFM_Log()
     {
         throw new AssertionError();
     }
 
+    public static void info(Object... params)
+    {
+        prepareLogMessage(Level.INFO, params);
+    }
+
+    public static void warning(Object... params)
+    {
+        prepareLogMessage(Level.WARNING, params);
+    }
+
+    public static void severe(Object... params)
+    {
+        prepareLogMessage(Level.SEVERE, params);
+    }
+
+    private static void prepareLogMessage(Level level, Object... params)
+    {
+        if (params.length == 0)
+        {
+            return;
+        }
+
+        Object payload = params[0];
+
+        if (payload instanceof Throwable)
+        {
+            log(level, (Throwable) payload);
+        }
+        else
+        {
+            log(level, payload.toString(), params.length >= 2 && params[1] instanceof Boolean ? (Boolean) params[1] : false);
+        }
+    }
+
     private static void log(Level level, String message, boolean raw)
     {
-        logger.log(level, "{0}{1}", new Object[]{raw ? "" : "[" + TotalFreedomMod.pluginName + "]: ", message});
+        getLogger(raw).log(level, message);
     }
 
-    public static void info(String message)
+    private static void log(Level level, Throwable throwable)
     {
-        TFM_Log.info(message, false);
+        getLogger(false).log(level, null, throwable);
     }
 
-    public static void info(String message, boolean raw)
+    public static void setServerLogger(Logger logger)
     {
-        TFM_Log.log(Level.INFO, message, raw);
+        serverLogger = logger;
     }
 
-    public static void warning(String message)
+    public static void setPluginLogger(Logger logger)
     {
-        TFM_Log.info(message, false);
+        pluginLogger = logger;
     }
 
-    public static void warning(String message, boolean raw)
+    private static Logger getLogger(boolean raw)
     {
-        TFM_Log.log(Level.WARNING, message, raw);
-    }
-
-    public static void severe(String message)
-    {
-        TFM_Log.info(message, false);
-    }
-
-    public static void severe(String message, boolean raw)
-    {
-        TFM_Log.log(Level.SEVERE, message, raw);
-    }
-
-    public static void severe(Throwable ex)
-    {
-        logger.log(Level.SEVERE, null, ex);
+        if (raw || pluginLogger == null)
+        {
+            return (serverLogger != null ? serverLogger : FALLBACK_LOGGER);
+        }
+        else
+        {
+            return pluginLogger;
+        }
     }
 }
