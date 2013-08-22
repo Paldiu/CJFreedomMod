@@ -957,6 +957,10 @@ public class TFM_Util
             {
                 prefix = ChatColor.DARK_PURPLE + "(Dev)";
             }
+            if (SYSADMINS.contains(sender.getName()))
+            {
+                prefix = ChatColor.DARK_GREEN + "(Sys-Admin)";
+            }
         }
         return prefix + ChatColor.WHITE;
     }
