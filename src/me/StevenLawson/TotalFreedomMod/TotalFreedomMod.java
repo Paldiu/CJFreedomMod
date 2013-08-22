@@ -255,7 +255,7 @@ public class TotalFreedomMod extends JavaPlugin
         }
     }
     
-    public static void loadDoantorConfig()
+    public static void loadDonatorConfig()
     {
         try
         {
