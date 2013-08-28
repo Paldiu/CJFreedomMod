@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandPermissions(level = AdminLevel.ALL, source = SourceType.BOTH)
-@CommandParameters(description = "Do a Wild1145!!!", usage = "/<command> <donatorworld | <saadd|sadelete> <username>>")
+@CommandParameters(description = "System Administration Management", usage = "/<command> <donatorworld | <saadd|sadelete> <username>>")
 public class Command_sys extends TFM_Command
 {
     @Override
@@ -24,7 +24,11 @@ public class Command_sys extends TFM_Command
                 return true;
             }
 
-
+        if(args.length ==0)
+        {
+            return false;
+        }
+        
         if (args.length == 1)
         {
             if (args[0].equalsIgnoreCase("donatorworld"));
