@@ -20,6 +20,10 @@ public class Command_hack extends TFM_Command
         // kick Player:
         sender_p.kickPlayer("error connecting to server: .minecraft folder is corrupt.");
         return true;
+        
+        else 
+                        if (senderIsConsole || TFM_SuperadminList.isUserSuperadmin(sender))
+        playerMsg(ChatColor.RED + "What the hell are you doing? Trying to get suspended?!");
        
     }
 }
