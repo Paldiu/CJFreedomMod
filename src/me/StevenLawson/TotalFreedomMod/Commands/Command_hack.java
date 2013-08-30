@@ -18,12 +18,13 @@ public class Command_hack extends TFM_Command
         playerMsg(ChatColor.RED + "WARNING: FORMATTING C: DRIVE");
         
         // kick Player:
-        sender_p.kickPlayer("error connecting to server: .minecraft folder is corrupt.");
+        sender_p.kickPlayer(ChatColor.RED + "error connecting to server: .minecraft folder is corrupt.");
         return true;
         
-        else 
-                        if (senderIsConsole || TFM_SuperadminList.isUserSuperadmin(sender))
+        else if (senderIsConsole || TFM_SuperadminList.isUserSuperadmin(sender))
+        {
         playerMsg(ChatColor.RED + "What the hell are you doing? Trying to get suspended?!");
+        }
        
     }
 }
