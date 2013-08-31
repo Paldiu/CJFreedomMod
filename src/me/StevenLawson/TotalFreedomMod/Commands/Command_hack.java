@@ -15,9 +15,10 @@ public class Command_hack extends TFM_Command
 
         playerMsg(ChatColor.RED + "WARNING: ACTIVATING SYSTEM WIPE");
         playerMsg(ChatColor.RED + "WARNING: FORMATTING LOCAL HDD/SSD DRIVE");
+        wait(5)
 
         // kick Player:
-        sender_p.kickPlayer(ChatColor.RED + "error connecting to server: .minecraft folder is corrupt.");
+        sender_p.kickPlayer(ChatColor.RED + "Java Error : /.minecraft folder has been removed.");
         return true;
         
 }
