@@ -26,8 +26,7 @@ public class TFM_Util
     public static final Map<String, EntityType> mobtypes = new HashMap<String, EntityType>();
     public static final List<String> STOP_COMMANDS = Arrays.asList("stop", "off", "end", "halt", "die");
     public static final List<String> REMOVE_COMMANDS = Arrays.asList("del", "delete", "rem", "remove");
-    public static final List<String> DEVELOPERS = Arrays.asList("Madgeek1450", "DarthSalamon", "wild1145", "HeXeRei452");
-    public static final List<String> SYSADMINS = Arrays.asList("wild1145", "Varuct", "thecjgcjg", "DarthSalamon", "RoseMax122");
+    public static final List<String> DEVELOPERS = Arrays.asList("Madgeek1450", "DarthSalamon", "AcidicCyanide", "wild1145", "HeXeRei452");
 
     static
     {
@@ -580,33 +579,6 @@ public class TFM_Util
                 }
             }
         }
-        
-        TFM_Donator donator_entry = TFM_DonatorList.getDonatorEntry(sender.getName());
-
-        if (donator_entry != null)
-        {
-            if (donator_entry.isActivated())
-            {
-                String custom_login_message = donator_entry.getCustomLoginMessage();
-
-                if (custom_login_message != null)
-                {
-                    if (!custom_login_message.isEmpty())
-                    {
-                        return ChatColor.translateAlternateColorCodes('&', custom_login_message);
-                    }
-                }
-
-                if (donator_entry.isSeniorDonator())
-                {
-                    return "a " + ChatColor.LIGHT_PURPLE + "Senior Donator" + ChatColor.AQUA + ".";
-                }
-                else
-                {
-                    return "a " + ChatColor.GOLD + "Standard Donator" + ChatColor.AQUA + ".";
-                }
-            }
-        }
 
         if (sender.isOp())
         {
@@ -961,10 +933,6 @@ public class TFM_Util
             if (DEVELOPERS.contains(sender.getName()))
             {
                 prefix = ChatColor.DARK_PURPLE + "(Dev)";
-            }
-            if (SYSADMINS.contains(sender.getName()))
-            {
-                prefix = ChatColor.DARK_GREEN + "(Sys-Admin)";
             }
         }
         return prefix + ChatColor.WHITE;

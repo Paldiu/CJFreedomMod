@@ -19,4 +19,3 @@ public class TFM_LandmineData
         this.radius = radius;
     }
 }
-
