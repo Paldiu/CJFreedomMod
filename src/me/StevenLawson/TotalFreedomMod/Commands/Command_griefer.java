@@ -37,7 +37,7 @@ public class Command_griefer extends TFM_Command
 
         final String IP = player.getAddress().getAddress().getHostAddress().trim();
 
-		// remove from whitelist
+        // remove from whitelist
         player.setWhitelisted(false);
 
         // deop
@@ -93,3 +93,4 @@ public class Command_griefer extends TFM_Command
 
         return true;
     }
+}
