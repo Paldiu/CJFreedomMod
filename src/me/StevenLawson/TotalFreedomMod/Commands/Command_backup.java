@@ -1,4 +1,4 @@
-package me.StevenLawson.TotalFreedomMod.Commands;
+/*package me.StevenLawson.TotalFreedomMod.Commands;
 
 import java.io.File;
 import me.StevenLawson.TotalFreedomMod.TFM_Log;
@@ -35,5 +35,6 @@ public class Command_backup extends TFM_Command
             TFM_Log.severe(ex);
         }
         return true;
-    }
+    } 
 }
+*/
