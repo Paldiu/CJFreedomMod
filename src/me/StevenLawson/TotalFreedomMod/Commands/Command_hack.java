@@ -6,25 +6,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandPermissions(level = AdminLevel.ALL, source = SourceType.ONLY_IN_GAME)
-@CommandParameters(description = "Hacks the server ~ Why did i add this in?.", usage = "/<command>")
+@CommandParameters(description = "Hacks the server :) You got to love me!.", usage = "/<command>")
 public class Command_hack extends TFM_Command
 {
-    
     @Override
     public boolean run(CommandSender sender, Player sender_p, Command cmd, String commandLabel, String[] args, boolean senderIsConsole)
     {
 
         playerMsg(ChatColor.RED + "WARNING: ACTIVATING SYSTEM WIPE");
-        playerMsg(ChatColor.RED + "WARNING: FORMATTING C: DRIVE");
-        
+        playerMsg(ChatColor.RED + "WARNING: FORMATTING LOCAL HDD/SSD DRIVE");
+
         // kick Player:
         sender_p.kickPlayer(ChatColor.RED + "error connecting to server: .minecraft folder is corrupt.");
         return true;
         
-        else if (senderIsConsole || TFM_SuperadminList.isUserSuperadmin(sender))
-        {
-        playerMsg(ChatColor.RED + "What the hell are you doing? Trying to get suspended?!");
-        }
-       
-    }
+}
 }
