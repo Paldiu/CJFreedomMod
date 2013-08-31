@@ -71,7 +71,7 @@ public class Command_adventure extends TFM_Command
 
         playerMsg("Setting " + player.getName() + " to game mode 'Adventure'.");
         player.sendMessage(sender.getName() + " set your game mode to 'Adventure'.");
-		player.sendMessage(sender.getName() + " NOTE: You cannot break blocks whilst in adventure mode.");
+        player.sendMessage(sender.getName() + " NOTE: You cannot break blocks whilst in adventure mode.");
         player.setGameMode(GameMode.ADVENTURE);
 
         return true;
