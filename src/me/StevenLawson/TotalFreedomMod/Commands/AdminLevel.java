@@ -1,6 +1,18 @@
 package me.StevenLawson.TotalFreedomMod.Commands;
 
-public enum AdminLevel {
+public enum AdminLevel
+{
+    ALL("All Player Commands"), OP("OP Commands"), SUPER("SuperAdmin Commands"), SENIOR("Senior Admin Commands");
+    //
+    private final String friendlyName;
 
-    ALL, OP, SUPER, SENIOR
+    private AdminLevel(String friendlyName)
+    {
+        this.friendlyName = friendlyName;
+    }
+
+    public String getFriendlyName()
+    {
+        return friendlyName;
+    }
 }

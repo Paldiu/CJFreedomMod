@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.*;
 import me.StevenLawson.TotalFreedomMod.Commands.TFM_Command;
 import me.StevenLawson.TotalFreedomMod.Commands.TFM_CommandLoader;
+import me.StevenLawson.TotalFreedomMod.HTTPD.TFM_HTTPD_Manager;
 import me.StevenLawson.TotalFreedomMod.Listener.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -30,8 +31,6 @@ public class TotalFreedomMod extends JavaPlugin
     public static final long SERVICE_CHECKER_RATE = 120L;
     //
     public static final String SUPERADMIN_FILE = "superadmin.yml";
-    public static final String DONATOR_FILE = "donator.yml";
-    public static final String BACKUP_FILE = "autobackup.php";
     public static final String PERMBAN_FILE = "permban.yml";
     public static final String PROTECTED_AREA_FILE = "protectedareas.dat";
     public static final String SAVED_FLAGS_FILE = "savedflags.dat";
@@ -83,19 +82,26 @@ public class TotalFreedomMod extends JavaPlugin
 
         loadSuperadminConfig();
         loadPermbanConfig();
-        loadDonatorConfig();
 
         TFM_UserList.getInstance(plugin);
 
         registerEventHandlers();
 
-        if (TFM_ConfigEntry.GENERATE_FLATLANDS.getBoolean())
+        try
         {
-            TFM_Util.wipeFlatlandsIfFlagged();
-            TFM_Util.generateFlatlands(TFM_ConfigEntry.FLATLANDS_GENERATION_PARAMS.getString());
+            TFM_Flatlands.getInstance().getWorld();
+        }
+        catch (Exception ex)
+        {
         }
 
-        TFM_AdminWorld.getInstance().getAdminWorld();
+        try
+        {
+            TFM_AdminWorld.getInstance().getWorld();
+        }
+        catch (Exception ex)
+        {
+        }
 
         if (TFM_ConfigEntry.DISABLE_WEATHER.getBoolean())
         {
@@ -104,6 +110,7 @@ public class TotalFreedomMod extends JavaPlugin
                 world.setThundering(false);
                 world.setStorm(false);
                 world.setThunderDuration(0);
+                world.setWeatherDuration(0);
             }
         }
 
@@ -166,6 +173,8 @@ public class TotalFreedomMod extends JavaPlugin
             }
         }.runTaskLater(plugin, 20L);
 
+        TFM_HTTPD_Manager.getInstance().start();
+
         TFM_Log.info("Plugin enabled.");
     }
 
@@ -173,6 +182,8 @@ public class TotalFreedomMod extends JavaPlugin
     public void onDisable()
     {
         server.getScheduler().cancelTasks(plugin);
+
+        TFM_HTTPD_Manager.getInstance().stop();
 
         TFM_Log.info("Plugin disabled.");
     }
@@ -252,19 +263,6 @@ public class TotalFreedomMod extends JavaPlugin
         catch (Exception ex)
         {
             TFM_Log.severe("Error loading superadmin list: " + ex.getMessage());
-        }
-    }
-    
-    public static void loadDonatorConfig()
-    {
-        try
-        {
-            TFM_DonatorList.backupSavedList();
-            TFM_DonatorList.loadDonatorList();
-        }
-        catch (Exception ex)
-        {
-            TFM_Log.severe("Error loading donator list: " + ex.getMessage());
         }
     }
 
