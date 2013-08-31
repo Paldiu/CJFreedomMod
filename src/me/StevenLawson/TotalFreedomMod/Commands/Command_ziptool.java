@@ -1,4 +1,4 @@
-package me.StevenLawson.TotalFreedomMod.Commands;
+/*package me.StevenLawson.TotalFreedomMod.Commands;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,3 +76,4 @@ public class Command_ziptool extends TFM_Command
         return true;
     }
 }
+*/
