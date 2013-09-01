@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandPermissions(level = AdminLevel.ALL, source = SourceType.BOTH)
-@CommandParameters(description = "System Administration Management", usage = "/<command> <<saadd|sadelete> <username>>")
+@CommandParameters(description = "System Administration Management", usage = "/<command> <donatorworld | <saadd|sadelete> <username>>")
 public class Command_sys extends TFM_Command
 {
     @Override
@@ -31,8 +31,22 @@ public class Command_sys extends TFM_Command
         
         if (args.length == 1)
         {
-            
-            return false;
+            if (args[0].equalsIgnoreCase("donatorworld"));
+            {
+                {
+                    if (sender_p.getWorld() == TFM_DonatorWorld.getInstance().getDonatorWorld())
+                    {
+                        playerMsg("Going to the main world.");
+                        sender_p.teleport(server.getWorlds().get(0).getSpawnLocation());
+                    }
+                    else
+                    {
+                        playerMsg("Going to the DonatorWorld.");
+                        TFM_DonatorWorld.getInstance().sendToDonatorWorld(sender_p);
+                    }
+                    return true;
+                }
+            }
         }
         else if (args.length == 2)
         {
