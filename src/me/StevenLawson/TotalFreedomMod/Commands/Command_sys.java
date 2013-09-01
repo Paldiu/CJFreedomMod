@@ -31,22 +31,7 @@ public class Command_sys extends TFM_Command
         
         if (args.length == 1)
         {
-            if (args[0].equalsIgnoreCase("donatorworld"));
-            {
-                {
-                    if (sender_p.getWorld() == TFM_DonatorWorld.getInstance().getDonatorWorld())
-                    {
-                        playerMsg("Going to the main world.");
-                        sender_p.teleport(server.getWorlds().get(0).getSpawnLocation());
-                    }
-                    else
-                    {
-                        playerMsg("Going to the DonatorWorld.");
-                        TFM_DonatorWorld.getInstance().sendToDonatorWorld(sender_p);
-                    }
-                    return true;
-                }
-            }
+            return false;
         }
         else if (args.length == 2)
         {
