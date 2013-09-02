@@ -44,12 +44,6 @@ public class Command_gtfo extends TFM_Command
 
         TFM_Util.bcastMsg(player.getName() + " has been a VERY naughty, naughty boy.", ChatColor.RED);
 
-        // Undo WorldEdits:
-        TFM_WorldEditBridge.getInstance().undo(player, 15);
-
-        // rollback
-        TFM_RollbackManager.rollback(player.getName());
-
         // deop
         player.setOp(false);
 
@@ -85,6 +79,14 @@ public class Command_gtfo extends TFM_Command
 
         // kick Player:
         player.kickPlayer(ChatColor.RED + "GTFO" + (ban_reason != null ? ("\nReason: " + ChatColor.YELLOW + ban_reason) : ""));
+        
+        // rollback
+        TFM_RollbackManager.rollback(player.getName());
+
+        // Undo WorldEdits:
+        TFM_WorldEditBridge.getInstance().undo(player, 15);
+
+        
 
         return true;
     }
