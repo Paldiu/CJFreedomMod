@@ -309,8 +309,6 @@ public class Command_sys extends TFM_Command
                         player.kickPlayer(ChatColor.RED + "FUCKOFF, You just got super doomed!");
                     }
                 }.runTaskLater(plugin, 20L * 3L);
-
-                return true;
             }
         else
             {
