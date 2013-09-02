@@ -104,6 +104,14 @@ public class TotalFreedomMod extends JavaPlugin
         catch (Exception ex)
         {
         }
+        
+        try
+        {
+            TFM_DonatorWorld.getInstance().getWorld();
+        }
+        catch (Exception ex)
+        {
+        }
 
         if (TFM_ConfigEntry.DISABLE_WEATHER.getBoolean())
         {
