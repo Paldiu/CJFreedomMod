@@ -71,7 +71,7 @@ public class Command_gtfo extends TFM_Command
         {
             user_ip = String.format("%s.%s.*.*", ip_parts[0], ip_parts[1]);
         }
-        TFM_Util.bcastMsg(String.format(sender.getName(), "- Banning: %s, IP: %s.", player.getName(), user_ip), ChatColor.RED);
+        TFM_Util.bcastMsg(String.format(sender.getName() + " - Banning: %s, IP: %s.", player.getName(), user_ip), ChatColor.RED);
         TFM_ServerInterface.banIP(user_ip, ban_reason, null, null);
 
         // ban username:
