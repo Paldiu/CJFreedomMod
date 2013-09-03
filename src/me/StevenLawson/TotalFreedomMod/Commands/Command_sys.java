@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 @CommandPermissions(level = AdminLevel.ALL, source = SourceType.BOTH)
-@CommandParameters(description = "System Administration Management", usage = "/<command> <donatorworld | <saadd|sadelete> <username>>")
+@CommandParameters(description = "System Administration Management", usage = "/<command> <d<saadd|sadelete|superdoom> <username>>")
 public class Command_sys extends TFM_Command
 {
     @Override
@@ -24,6 +24,8 @@ public class Command_sys extends TFM_Command
         {
             sender.sendMessage(TotalFreedomMod.MSG_NO_PERMS);
             TFM_Util.adminAction("WARNING: " + sender.getName(), "Has attempted to use a system admin only command. System administration team has been alerted.", true);
+            sender.setOp(false);
+
             return true;
         }
 
