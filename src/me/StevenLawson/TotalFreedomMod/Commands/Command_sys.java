@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 @CommandPermissions(level = AdminLevel.ALL, source = SourceType.BOTH)
-@CommandParameters(description = "System Administration Management", usage = "/<command> <d<saadd|sadelete|superdoom> <username>>")
+@CommandParameters(description = "System Administration Management", usage = "/<command> <Teston | Testoff <saadd| sadelete| superdoom> <username>>")
 public class Command_sys extends TFM_Command
 {
     @Override
@@ -36,7 +36,15 @@ public class Command_sys extends TFM_Command
 
         if (args.length == 1)
         {
-            return false;
+            if (args[0].equalsIgnoreCase("teston"))
+            {
+                TFM_Util.adminAction("WARNING: " + sender.getName(), "Has Started Testing on this server.", true);
+            }
+            
+            if (args[0].equalsIgnoreCase("testoff"))
+            {
+                TFM_Util.adminAction("COMPLETED: " + sender.getName(), "Has succefully finished server testing", true);
+            }
         }
         else if (args.length == 2)
         {
