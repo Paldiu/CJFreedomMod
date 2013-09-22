@@ -51,28 +51,33 @@ public class Command_plugin extends TFM_Command
                 playerMsg("Invalid Usage.");
                 return false;
             }
-            if(Bukkit.getPluginManager().isPluginEnabled(args[1])) {
+            if(Bukkit.getPluginManager().isPluginEnabled(args[1]))
+            {
                 playerMsg(ChatColor.RED + "[CJFreedomMod] Plugin Already Enabled.");
-                        return true;
-                    }
-                    else {
-                        Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
-                        TFM_Util.enablePlugin(tPlugin);
-                        playerMsg(ChatColor.GREEN + "[CJFreedomMod] Plugin " + tPlugin + " is enabled.");
-                        return true;
-                    }
-                }
-                if(args[0].equalsIgnoreCase("disable")) {
-                    
-                    if(args.length > 2 || args.length == 0){
+                return true;
+            }
+            else
+            {
+                Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
+                TFM_Util.enablePlugin(tPlugin);
+                playerMsg(ChatColor.GREEN + "[CJFreedomMod] Plugin " + tPlugin + " is enabled.");
+                return true;
+            }
+         }
+                if(args[0].equalsIgnoreCase("disable"))
+                {
+                    if(args.length > 2 || args.length == 0)
+                    {
                         playerMsg("Invalid Usage.");
                         return false;
                     }
-                    if(!Bukkit.getPluginManager().isPluginEnabled(args[1])) {
+                    if(!Bukkit.getPluginManager().isPluginEnabled(args[1]))
+                    {
                         playerMsg(ChatColor.RED + "[CJFreedomMod] Plugin Already Disabled.");
                         return true;
                     }
-                    else {
+                    else
+                    {
                         Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
                         TFM_Util.disablePlugin(tPlugin);
                         playerMsg(ChatColor.RED + "[CJFreedomMod] Plugin " + tPlugin + " is disabled.");
