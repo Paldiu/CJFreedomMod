@@ -19,6 +19,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
+import org.bukkit.plugin.Plugin;
 
 public class TFM_Util
 {
@@ -1028,5 +1029,25 @@ public class TFM_Util
     public static String colorise(String string)
     {
         return ChatColor.translateAlternateColorCodes('&', string);
+    }
+    public static void reloadPlugin(Plugin plugin)
+    {
+        Bukkit.getPluginManager().disablePlugin(plugin);
+        Bukkit.getPluginManager().enablePlugin(plugin);
+    }
+    public static void enablePlugin(Plugin plugin)
+    {
+        Bukkit.getPluginManager().enablePlugin(plugin);
+    }
+    public static void disablePlugin(Plugin plugin)
+    {
+        Bukkit.getPluginManager().disablePlugin(plugin);
+    }
+    public static void reloadServer()
+    {
+        Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+            for (int x = 0; x < plugins.length; x++) {
+                reloadPlugin(plugins[x]);
+            }
     }
 }
