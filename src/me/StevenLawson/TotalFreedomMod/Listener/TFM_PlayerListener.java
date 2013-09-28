@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 import me.StevenLawson.TotalFreedomMod.*;
-import me.StevenLawson.TotalFreedomMod.TFM_RollbackManager.EntryType;
+import me.StevenLawson.TotalFreedomMod.Commands.Command_landmine;
 import me.StevenLawson.TotalFreedomMod.TFM_RollbackManager.RollbackEntry;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -403,10 +403,10 @@ public class TFM_PlayerListener implements Listener
             return;
         }
 
-        Iterator<TFM_LandmineData> landmines = TFM_LandmineData.landmines.iterator();
+        Iterator<Command_landmine.TFM_LandmineData> landmines = Command_landmine.TFM_LandmineData.landmines.iterator();
         while (landmines.hasNext())
         {
-            TFM_LandmineData landmine = landmines.next();
+            Command_landmine.TFM_LandmineData landmine = landmines.next();
 
             Location location = landmine.location;
             if (location.getBlock().getType() != Material.TNT)

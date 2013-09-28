@@ -1,7 +1,7 @@
 package me.StevenLawson.TotalFreedomMod.Commands;
 
 import me.StevenLawson.TotalFreedomMod.TFM_Util;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ public class Command_rawsay extends TFM_Command
     {
         if (args.length > 0)
         {
-            TFM_Util.bcastMsg(TFM_Util.colorise(StringUtils.join(args, " ")));
+            TFM_Util.bcastMsg(TFM_Util.colorize(StringUtils.join(args, " ")));
         }
 
         return true;

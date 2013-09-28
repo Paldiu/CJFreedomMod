@@ -8,18 +8,15 @@ import java.nio.channels.ReadableByteChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.plugin.Plugin;
 
 public class TFM_Util
 {
@@ -27,8 +24,23 @@ public class TFM_Util
     public static final Map<String, EntityType> mobtypes = new HashMap<String, EntityType>();
     public static final List<String> STOP_COMMANDS = Arrays.asList("stop", "off", "end", "halt", "die");
     public static final List<String> REMOVE_COMMANDS = Arrays.asList("del", "delete", "rem", "remove");
-    public static final List<String> DEVELOPERS = Arrays.asList("Madgeek1450", "DarthSalamon", "wild1145", "HeXeRei452");
-    public static final List<String> SYSADMINS = Arrays.asList("wild1145", "Varuct", "thecjgcjg", "DarthSalamon", "RoseMax122");
+    public static final List<String> DEVELOPERS = Arrays.asList("Madgeek1450", "DarthSalamon", "AcidicCyanide", "wild1145", "HeXeRei452");
+    private static final Random RANDOM = new Random();
+    public static String DATE_STORAGE_FORMAT = "EEE, d MMM yyyy HH:mm:ss Z";
+    public static final Map<String, ChatColor> CHAT_COLOR_NAMES = new HashMap<String, ChatColor>();
+    public static final List<ChatColor> CHAT_COLOR_POOL = Arrays.asList(
+            ChatColor.DARK_BLUE,
+            ChatColor.DARK_GREEN,
+            ChatColor.DARK_AQUA,
+            ChatColor.DARK_RED,
+            ChatColor.DARK_PURPLE,
+            ChatColor.GOLD,
+            ChatColor.BLUE,
+            ChatColor.GREEN,
+            ChatColor.AQUA,
+            ChatColor.RED,
+            ChatColor.LIGHT_PURPLE,
+            ChatColor.YELLOW);
 
     static
     {
@@ -47,6 +59,11 @@ public class TFM_Util
             catch (Exception ex)
             {
             }
+        }
+
+        for (ChatColor chatColor : CHAT_COLOR_POOL)
+        {
+            CHAT_COLOR_NAMES.put(chatColor.name().toLowerCase().replace("_", ""), chatColor);
         }
     }
 
@@ -216,177 +233,36 @@ public class TFM_Util
         world.setTime(time + 24000 + ticks);
     }
 
-    public static void createDefaultConfiguration(String name, File pluginFile)
+    public static void createDefaultConfiguration(final String configFileName)
     {
-        TotalFreedomMod tfm = TotalFreedomMod.plugin;
+        final File targetFile = new File(TotalFreedomMod.plugin.getDataFolder(), configFileName);
 
-        File actual = new File(tfm.getDataFolder(), name);
-        if (!actual.exists())
+        if (targetFile.exists())
         {
-            TFM_Log.info("Installing default configuration file template: " + actual.getPath());
-            InputStream input = null;
-            try
-            {
-                JarFile file = new JarFile(pluginFile);
-                ZipEntry copy = file.getEntry(name);
-                if (copy == null)
-                {
-                    TFM_Log.severe("Unable to read default configuration: " + actual.getPath());
-                    return;
-                }
-                input = file.getInputStream(copy);
-            }
-            catch (IOException ioex)
-            {
-                TFM_Log.severe("Unable to read default configuration: " + actual.getPath());
-            }
-            if (input != null)
-            {
-                FileOutputStream output = null;
+            return;
+        }
 
-                try
-                {
-                    tfm.getDataFolder().mkdirs();
-                    output = new FileOutputStream(actual);
-                    byte[] buf = new byte[8192];
-                    int length;
-                    while ((length = input.read(buf)) > 0)
-                    {
-                        output.write(buf, 0, length);
-                    }
+        TFM_Log.info("Installing default configuration file template: " + targetFile.getPath());
 
-                    TFM_Log.info("Default configuration file written: " + actual.getPath());
-                }
-                catch (IOException ioex)
-                {
-                    TFM_Log.severe("Unable to write default configuration: " + actual.getPath() + "\n" + ExceptionUtils.getStackTrace(ioex));
-                }
-                finally
-                {
-                    try
-                    {
-                        if (input != null)
-                        {
-                            input.close();
-                        }
-                    }
-                    catch (IOException ioex)
-                    {
-                    }
-
-                    try
-                    {
-                        if (output != null)
-                        {
-                            output.close();
-                        }
-                    }
-                    catch (IOException ioex)
-                    {
-                    }
-                }
-            }
+        try
+        {
+            final InputStream configFileStream = TotalFreedomMod.plugin.getResource(configFileName);
+            FileUtils.copyInputStreamToFile(configFileStream, targetFile);
+            configFileStream.close();
+        }
+        catch (IOException ex)
+        {
+            TFM_Log.severe(ex);
         }
     }
 
-    public static class TFM_EntityWiper
+    public static boolean deleteFolder(final File file)
     {
-        private static final List<Class<? extends Entity>> WIPEABLES = new ArrayList<Class<? extends Entity>>();
-
-        static
+        if (file.exists() && file.isDirectory())
         {
-            WIPEABLES.add(EnderCrystal.class);
-            WIPEABLES.add(EnderSignal.class);
-            WIPEABLES.add(ExperienceOrb.class);
-            WIPEABLES.add(Projectile.class);
-            WIPEABLES.add(FallingBlock.class);
-            WIPEABLES.add(Firework.class);
-            WIPEABLES.add(Item.class);
+            return FileUtils.deleteQuietly(file);
         }
-
-        private TFM_EntityWiper()
-        {
-            throw new AssertionError();
-        }
-
-        private static boolean canWipe(Entity entity, boolean wipeExplosives, boolean wipeVehicles)
-        {
-            if (wipeExplosives)
-            {
-                if (Explosive.class.isAssignableFrom(entity.getClass()))
-                {
-                    return true;
-                }
-            }
-
-            if (wipeVehicles)
-            {
-                if (Boat.class.isAssignableFrom(entity.getClass()))
-                {
-                    return true;
-                }
-                else if (Minecart.class.isAssignableFrom(entity.getClass()))
-                {
-                    return true;
-                }
-            }
-
-            Iterator<Class<? extends Entity>> it = WIPEABLES.iterator();
-            while (it.hasNext())
-            {
-                if (it.next().isAssignableFrom(entity.getClass()))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static int wipeEntities(boolean wipeExplosives, boolean wipeVehicles)
-        {
-            int removed = 0;
-
-            Iterator<World> worlds = Bukkit.getWorlds().iterator();
-            while (worlds.hasNext())
-            {
-                Iterator<Entity> entities = worlds.next().getEntities().iterator();
-                while (entities.hasNext())
-                {
-                    Entity entity = entities.next();
-                    if (canWipe(entity, wipeExplosives, wipeVehicles))
-                    {
-                        entity.remove();
-                        removed++;
-                    }
-                }
-            }
-
-            return removed;
-        }
-    }
-
-    public static boolean deleteFolder(File file)
-    {
-        if (file.exists())
-        {
-            if (file.isDirectory())
-            {
-                for (File f : file.listFiles())
-                {
-                    if (!TFM_Util.deleteFolder(f))
-                    {
-                        return false;
-                    }
-                }
-            }
-            file.delete();
-            return !file.exists();
-        }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     public static EntityType getEntityType(String mobname) throws Exception
@@ -415,32 +291,6 @@ public class TFM_Util
         }
     }
 
-    private static void copy(File file, OutputStream out) throws IOException
-    {
-        InputStream in = new FileInputStream(file);
-        try
-        {
-            copy(in, out);
-        }
-        finally
-        {
-            in.close();
-        }
-    }
-
-    private static void copy(InputStream in, File file) throws IOException
-    {
-        OutputStream out = new FileOutputStream(file);
-        try
-        {
-            copy(in, out);
-        }
-        finally
-        {
-            out.close();
-        }
-    }
-
     public static boolean isStopCommand(String command)
     {
         return STOP_COMMANDS.contains(command.toLowerCase());
@@ -449,11 +299,6 @@ public class TFM_Util
     public static boolean isRemoveCommand(String command)
     {
         return REMOVE_COMMANDS.contains(command.toLowerCase());
-    }
-
-    enum EjectMethod
-    {
-        STRIKE_ONE, STRIKE_TWO, STRIKE_THREE;
     }
 
     public static void autoEject(Player player, String kickMessage)
@@ -578,33 +423,6 @@ public class TFM_Util
                 else
                 {
                     return "a " + ChatColor.GOLD + "Super Admin" + ChatColor.AQUA + ".";
-                }
-            }
-        }
-        
-        TFM_Donator donator_entry = TFM_DonatorList.getDonatorEntry(sender.getName());
-
-        if (donator_entry != null)
-        {
-            if (donator_entry.isActivated())
-            {
-                String custom_login_message = donator_entry.getCustomLoginMessage();
-
-                if (custom_login_message != null)
-                {
-                    if (!custom_login_message.isEmpty())
-                    {
-                        return ChatColor.translateAlternateColorCodes('&', custom_login_message);
-                    }
-                }
-
-                if (donator_entry.isSeniorDonator())
-                {
-                    return "a " + ChatColor.LIGHT_PURPLE + "Senior Donator" + ChatColor.AQUA + ".";
-                }
-                else
-                {
-                    return "a " + ChatColor.GOLD + "Standard Donator" + ChatColor.AQUA + ".";
                 }
             }
         }
@@ -805,7 +623,6 @@ public class TFM_Util
             TFM_Log.severe(ex);
         }
     }
-    public static String DATE_STORAGE_FORMAT = "EEE, d MMM yyyy HH:mm:ss Z";
 
     public static String dateToString(Date date)
     {
@@ -963,24 +780,8 @@ public class TFM_Util
             {
                 prefix = ChatColor.DARK_PURPLE + "(Dev)";
             }
-            if (SYSADMINS.contains(sender.getName()))
-            {
-                prefix = ChatColor.DARK_GREEN + "(Sys-Admin)";
-            }
         }
         return prefix + ChatColor.WHITE;
-    }
-
-    public static String inputStreamToString(InputStream is, boolean preserveNewlines) throws IOException
-    {
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null)
-        {
-            sb.append(line).append(preserveNewlines ? System.getProperty("line.separator") : "");
-        }
-        return sb.toString();
     }
 
     //getField: Borrowed from WorldEdit
@@ -1006,48 +807,96 @@ public class TFM_Util
         while (checkClass.getSuperclass() != Object.class && ((checkClass = checkClass.getSuperclass()) != null));
         return null;
     }
-    public static final List<ChatColor> COLOR_POOL = Arrays.asList(
-            ChatColor.DARK_BLUE,
-            ChatColor.DARK_GREEN,
-            ChatColor.DARK_AQUA,
-            ChatColor.DARK_RED,
-            ChatColor.DARK_PURPLE,
-            ChatColor.GOLD,
-            ChatColor.BLUE,
-            ChatColor.GREEN,
-            ChatColor.AQUA,
-            ChatColor.RED,
-            ChatColor.LIGHT_PURPLE,
-            ChatColor.YELLOW);
-    private static final Random RANDOM = new Random();
 
     public static ChatColor randomChatColor()
     {
-        return COLOR_POOL.get(RANDOM.nextInt(COLOR_POOL.size()));
+        return CHAT_COLOR_POOL.get(RANDOM.nextInt(CHAT_COLOR_POOL.size()));
     }
 
-    public static String colorise(String string)
+    public static String colorize(String string)
     {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
-    public static void reloadPlugin(Plugin plugin)
+
+    public static class TFM_EntityWiper
     {
-        Bukkit.getPluginManager().disablePlugin(plugin);
-        Bukkit.getPluginManager().enablePlugin(plugin);
-    }
-    public static void enablePlugin(Plugin plugin)
-    {
-        Bukkit.getPluginManager().enablePlugin(plugin);
-    }
-    public static void disablePlugin(Plugin plugin)
-    {
-        Bukkit.getPluginManager().disablePlugin(plugin);
-    }
-    public static void reloadServer()
-    {
-        Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
-            for (int x = 0; x < plugins.length; x++) {
-                reloadPlugin(plugins[x]);
+        private static final List<Class<? extends Entity>> WIPEABLES = new ArrayList<Class<? extends Entity>>();
+
+        static
+        {
+            WIPEABLES.add(EnderCrystal.class);
+            WIPEABLES.add(EnderSignal.class);
+            WIPEABLES.add(ExperienceOrb.class);
+            WIPEABLES.add(Projectile.class);
+            WIPEABLES.add(FallingBlock.class);
+            WIPEABLES.add(Firework.class);
+            WIPEABLES.add(Item.class);
+        }
+
+        private TFM_EntityWiper()
+        {
+            throw new AssertionError();
+        }
+
+        private static boolean canWipe(Entity entity, boolean wipeExplosives, boolean wipeVehicles)
+        {
+            if (wipeExplosives)
+            {
+                if (Explosive.class.isAssignableFrom(entity.getClass()))
+                {
+                    return true;
+                }
             }
+
+            if (wipeVehicles)
+            {
+                if (Boat.class.isAssignableFrom(entity.getClass()))
+                {
+                    return true;
+                }
+                else if (Minecart.class.isAssignableFrom(entity.getClass()))
+                {
+                    return true;
+                }
+            }
+
+            Iterator<Class<? extends Entity>> it = WIPEABLES.iterator();
+            while (it.hasNext())
+            {
+                if (it.next().isAssignableFrom(entity.getClass()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static int wipeEntities(boolean wipeExplosives, boolean wipeVehicles)
+        {
+            int removed = 0;
+
+            Iterator<World> worlds = Bukkit.getWorlds().iterator();
+            while (worlds.hasNext())
+            {
+                Iterator<Entity> entities = worlds.next().getEntities().iterator();
+                while (entities.hasNext())
+                {
+                    Entity entity = entities.next();
+                    if (canWipe(entity, wipeExplosives, wipeVehicles))
+                    {
+                        entity.remove();
+                        removed++;
+                    }
+                }
+            }
+
+            return removed;
+        }
+    }
+
+    enum EjectMethod
+    {
+        STRIKE_ONE, STRIKE_TWO, STRIKE_THREE;
     }
 }

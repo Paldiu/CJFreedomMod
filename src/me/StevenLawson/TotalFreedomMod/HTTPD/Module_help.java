@@ -20,9 +20,9 @@ import static org.apache.commons.lang3.StringEscapeUtils.*;
 
 public class Module_help extends TFM_HTTPD_Module
 {
-    public Module_help(String uri, NanoHTTPD.Method method, Map<String, String> headers, Map<String, String> params, Map<String, String> files)
+    public Module_help(NanoHTTPD.HTTPSession session)
     {
-        super(uri, method, headers, params, files);
+        super(session);
     }
 
     @Override
@@ -147,4 +147,9 @@ public class Module_help extends TFM_HTTPD_Module
     {
         return ".commandName{font-weight:bold;}.commandDescription{padding-left:15px;}li{margin:.15em;padding:.15em;}";
     }
+//    @Override
+//    public String getScript()
+//    {
+//        return "$(document).ready(function(){console.log(\"Ready\");});";
+//    }
 }

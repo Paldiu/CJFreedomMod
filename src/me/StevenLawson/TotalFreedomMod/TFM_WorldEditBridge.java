@@ -1,11 +1,16 @@
 package me.StevenLawson.TotalFreedomMod;
 
+import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
+import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.regions.Region;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class TFM_WorldEditBridge
 {
@@ -109,6 +114,51 @@ public class TFM_WorldEditBridge
         {
             TFM_Log.severe(ex);
         }
+    }
+
+    public void validateSelection(final Player player)
+    {
+        if (TFM_SuperadminList.isUserSuperadmin(player))
+        {
+            return;
+        }
+
+        try
+        {
+            final LocalSession session = getPlayerSession(player);
+            if (session != null)
+            {
+                final LocalWorld selectionWorld = session.getSelectionWorld();
+                final Region selection = session.getSelection(selectionWorld);
+                if (TFM_ProtectedArea.isInProtectedArea(
+                        getBukkitVector(selection.getMinimumPoint()),
+                        getBukkitVector(selection.getMaximumPoint()),
+                        selectionWorld.getName()))
+                {
+                    new BukkitRunnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            player.sendMessage(ChatColor.RED + "The region that you selected contained a protected area. Selection cleared.");
+                            session.getRegionSelector(selectionWorld).clear();
+                        }
+                    }.runTaskLater(TotalFreedomMod.plugin, 1L);
+                }
+            }
+        }
+        catch (IncompleteRegionException ex)
+        {
+        }
+        catch (Exception ex)
+        {
+            TFM_Log.severe(ex);
+        }
+    }
+
+    private static org.bukkit.util.Vector getBukkitVector(com.sk89q.worldedit.Vector worldEditVector)
+    {
+        return new org.bukkit.util.Vector(worldEditVector.getX(), worldEditVector.getY(), worldEditVector.getZ());
     }
 
     public static TFM_WorldEditBridge getInstance()

@@ -3,7 +3,7 @@ package me.StevenLawson.TotalFreedomMod.Commands;
 import me.StevenLawson.TotalFreedomMod.TFM_ConfigEntry;
 import me.StevenLawson.TotalFreedomMod.TFM_PlayerData;
 import me.StevenLawson.TotalFreedomMod.TFM_Util;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -78,10 +78,10 @@ public class Command_tossmob extends TFM_Command
 
         playerData.enableMobThrower(creature, speed);
         playerMsg("MobThrower is enabled. Creature: " + creature + " - Speed: " + speed + ".", ChatColor.GREEN);
-        playerMsg("Left click while holding a stick to throw mobs!", ChatColor.GREEN);
+        playerMsg("Left click while holding a " + Material.BONE.toString() + " to throw mobs!", ChatColor.GREEN);
         playerMsg("Type '/tossmob off' to disable.  -By Madgeek1450", ChatColor.GREEN);
 
-        sender_p.setItemInHand(new ItemStack(Material.STICK, 1));
+        sender_p.setItemInHand(new ItemStack(Material.BONE, 1));
 
         return true;
     }

@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import me.StevenLawson.TotalFreedomMod.TFM_ConfigEntry;
 
 import static me.StevenLawson.TotalFreedomMod.HTTPD.NanoHTTPD.*;
-import me.StevenLawson.TotalFreedomMod.TFM_ConfigEntry;
 
 /*
  * This class was adapted from https://github.com/NanoHttpd/nanohttpd/blob/master/webserver/src/main/java/fi/iki/elonen/SimpleWebServer.java
@@ -22,7 +22,7 @@ import me.StevenLawson.TotalFreedomMod.TFM_ConfigEntry;
 public class Module_file extends TFM_HTTPD_Module
 {
     private final File rootDir = new File(TFM_ConfigEntry.HTTPD_PUBLIC_FOLDER.getString());
-    private static final Map<String, String> MIME_TYPES = new HashMap<String, String>();
+    public static final Map<String, String> MIME_TYPES = new HashMap<String, String>();
 
     static
     {
@@ -33,6 +33,7 @@ public class Module_file extends TFM_HTTPD_Module
         MIME_TYPES.put("java", "text/x-java-source, text/java");
         MIME_TYPES.put("txt", "text/plain");
         MIME_TYPES.put("asc", "text/plain");
+        MIME_TYPES.put("yml", "text/yaml");
         MIME_TYPES.put("gif", "image/gif");
         MIME_TYPES.put("jpg", "image/jpeg");
         MIME_TYPES.put("jpeg", "image/jpeg");
@@ -53,9 +54,9 @@ public class Module_file extends TFM_HTTPD_Module
         MIME_TYPES.put("class", "application/octet-stream");
     }
 
-    public Module_file(String uri, NanoHTTPD.Method method, Map<String, String> headers, Map<String, String> params, Map<String, String> files)
+    public Module_file(NanoHTTPD.HTTPSession session)
     {
-        super(uri, method, headers, params, files);
+        super(session);
     }
 
     private File getRootDir()
@@ -173,7 +174,7 @@ public class Module_file extends TFM_HTTPD_Module
                 }
                 if (mime == null)
                 {
-                    mime = NanoHTTPD.MIME_DEFAULT_BINARY;
+                    mime = TFM_HTTPD_Manager.MIME_DEFAULT_BINARY;
                 }
 
                 // Calculate etag

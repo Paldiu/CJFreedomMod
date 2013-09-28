@@ -4,8 +4,8 @@ import me.StevenLawson.TotalFreedomMod.TFM_RollbackManager;
 import me.StevenLawson.TotalFreedomMod.TFM_ServerInterface;
 import me.StevenLawson.TotalFreedomMod.TFM_Util;
 import me.StevenLawson.TotalFreedomMod.TFM_WorldEditBridge;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandPermissions(level = AdminLevel.SUPER, source = SourceType.BOTH)
-@CommandParameters(description = "Makes someone GTFO (deop and ip ban by username).", usage = "/<command> <partialname> [reason]")
+@CommandParameters(description = "Makes someone GTFO (deop and ip ban by username).", usage = "/<command> <partialname>")
 public class Command_gtfo extends TFM_Command
 {
     @Override
@@ -44,6 +44,12 @@ public class Command_gtfo extends TFM_Command
 
         TFM_Util.bcastMsg(player.getName() + " has been a VERY naughty, naughty boy.", ChatColor.RED);
 
+        // Undo WorldEdits:
+        TFM_WorldEditBridge.getInstance().undo(player, 15);
+
+        // rollback
+        TFM_RollbackManager.rollback(player.getName());
+
         // deop
         player.setOp(false);
 
@@ -71,7 +77,7 @@ public class Command_gtfo extends TFM_Command
         {
             user_ip = String.format("%s.%s.*.*", ip_parts[0], ip_parts[1]);
         }
-        TFM_Util.bcastMsg(String.format(sender.getName() + " - Banning: %s, IP: %s.", player.getName(), user_ip), ChatColor.RED);
+        TFM_Util.bcastMsg(String.format("Banning: %s, IP: %s.", player.getName(), user_ip), ChatColor.RED);
         TFM_ServerInterface.banIP(user_ip, ban_reason, null, null);
 
         // ban username:
@@ -79,15 +85,8 @@ public class Command_gtfo extends TFM_Command
 
         // kick Player:
         player.kickPlayer(ChatColor.RED + "GTFO" + (ban_reason != null ? ("\nReason: " + ChatColor.YELLOW + ban_reason) : ""));
-        
-        // rollback
-        TFM_RollbackManager.rollback(player.getName());
-
-        // Undo WorldEdits:
-        TFM_WorldEditBridge.getInstance().undo(player, 15);
-
-        
 
         return true;
     }
 }
+>>>>>>> branch 'master' of https://github.com/TotalFreedom/TotalFreedomMod.git

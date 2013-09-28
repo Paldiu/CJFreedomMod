@@ -8,7 +8,7 @@ public enum TFM_ConfigEntry
     ALLOW_EXPLOSIONS(Boolean.class, "allow_explosions"),
     ALLOW_FIRE_PLACE(Boolean.class, "allow_fire_place"),
     ALLOW_FIRE_SPREAD(Boolean.class, "allow_fire_spread"),
-    ALLOW_FLIUD_SPREAD(Boolean.class, "allow_fluid_spread"),
+    ALLOW_FLUID_SPREAD(Boolean.class, "allow_fluid_spread"),
     ALLOW_LAVA_DAMAGE(Boolean.class, "allow_lava_damage"),
     ALLOW_LAVA_PLACE(Boolean.class, "allow_lava_place"),
     ALLOW_TNT_MINECARTS(Boolean.class, "allow_tnt_minecarts"),
@@ -121,5 +121,18 @@ public enum TFM_ConfigEntry
     public List getList()
     {
         return TFM_Config.getInstance().getList(this);
+    }
+
+    public static TFM_ConfigEntry findConfigEntry(String name)
+    {
+        name = name.toLowerCase().replace("_", "");
+        for (TFM_ConfigEntry entry : values())
+        {
+            if (entry.toString().toLowerCase().replace("_", "").equals(name))
+            {
+                return entry;
+            }
+        }
+        return null;
     }
 }

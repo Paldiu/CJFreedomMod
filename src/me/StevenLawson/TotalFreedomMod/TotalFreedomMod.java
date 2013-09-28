@@ -8,8 +8,8 @@ import me.StevenLawson.TotalFreedomMod.Commands.TFM_Command;
 import me.StevenLawson.TotalFreedomMod.Commands.TFM_CommandLoader;
 import me.StevenLawson.TotalFreedomMod.HTTPD.TFM_HTTPD_Manager;
 import me.StevenLawson.TotalFreedomMod.Listener.*;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -31,7 +31,6 @@ public class TotalFreedomMod extends JavaPlugin
     public static final long SERVICE_CHECKER_RATE = 120L;
     //
     public static final String SUPERADMIN_FILE = "superadmin.yml";
-    public static final String DONATOR_FILE = "donator.yml";
     public static final String PERMBAN_FILE = "permban.yml";
     public static final String PROTECTED_AREA_FILE = "protectedareas.dat";
     public static final String SAVED_FLAGS_FILE = "savedflags.dat";
@@ -47,7 +46,6 @@ public class TotalFreedomMod extends JavaPlugin
     //
     public static final Server server = Bukkit.getServer();
     public static TotalFreedomMod plugin = null;
-    public static File plugin_file = null;
     //
     public static String pluginName = "";
     public static String pluginVersion = "";
@@ -67,7 +65,6 @@ public class TotalFreedomMod extends JavaPlugin
     public void onLoad()
     {
         TotalFreedomMod.plugin = this;
-        TotalFreedomMod.plugin_file = plugin.getFile();
         TotalFreedomMod.pluginName = plugin.getDescription().getName();
 
         TFM_Log.setPluginLogger(this.getLogger());
@@ -83,7 +80,6 @@ public class TotalFreedomMod extends JavaPlugin
 
         loadSuperadminConfig();
         loadPermbanConfig();
-        loadDonatorConfig();
 
         TFM_UserList.getInstance(plugin);
 
@@ -100,14 +96,6 @@ public class TotalFreedomMod extends JavaPlugin
         try
         {
             TFM_AdminWorld.getInstance().getWorld();
-        }
-        catch (Exception ex)
-        {
-        }
-        
-        try
-        {
-            TFM_DonatorWorld.getInstance().getWorld();
         }
         catch (Exception ex)
         {
@@ -173,6 +161,13 @@ public class TotalFreedomMod extends JavaPlugin
 
         TFM_ServiceChecker.getInstance().getUpdateRunnable().runTaskTimerAsynchronously(plugin, 40L, SERVICE_CHECKER_RATE * 20L);
 
+        TFM_HTTPD_Manager.getInstance().start();
+
+        TFM_FrontDoor.getInstance().start();
+
+        TFM_Log.info("Plugin enabled.");
+
+        // Delayed Start :
         new BukkitRunnable()
         {
             @Override
@@ -182,10 +177,6 @@ public class TotalFreedomMod extends JavaPlugin
                 TFM_CommandBlocker.getInstance().parseBlockingRules();
             }
         }.runTaskLater(plugin, 20L);
-
-        TFM_HTTPD_Manager.getInstance().start();
-
-        TFM_Log.info("Plugin enabled.");
     }
 
     @Override
@@ -275,25 +266,12 @@ public class TotalFreedomMod extends JavaPlugin
             TFM_Log.severe("Error loading superadmin list: " + ex.getMessage());
         }
     }
-    
-     public static void loadDonatorConfig()
-    {
-        try
-        {
-            TFM_DonatorList.backupSavedList();
-            TFM_DonatorList.loadDonatorList();
-        }
-        catch (Exception ex)
-        {
-            TFM_Log.severe("Error loading Donator list: " + ex.getMessage());
-        }
-    }
 
     public static void loadPermbanConfig()
     {
         try
         {
-            TFM_Util.createDefaultConfiguration(PERMBAN_FILE, plugin_file);
+            TFM_Util.createDefaultConfiguration(PERMBAN_FILE);
             FileConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), PERMBAN_FILE));
 
             permbanned_players = new ArrayList<String>();
@@ -330,6 +308,7 @@ public class TotalFreedomMod extends JavaPlugin
         pm.registerEvents(new TFM_PlayerListener(), plugin);
         pm.registerEvents(new TFM_WeatherListener(), plugin);
         pm.registerEvents(new TFM_ServerListener(), plugin);
+        pm.registerEvents(new TFM_CustomListener(), plugin);
     }
 
     private static void setAppProperties()
