@@ -89,4 +89,3 @@ public class Command_gtfo extends TFM_Command
         return true;
     }
 }
->>>>>>> branch 'master' of https://github.com/TotalFreedom/TotalFreedomMod.git

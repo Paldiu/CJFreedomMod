@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@CommandPermissions(level = AdminLevel.SUPER, source = SourceType.ONLY_IN_GAME)
+@CommandPermissions(level = AdminLevel.SUPER, dlevel=DonatorLevel.STANDARD, source = SourceType.ONLY_IN_GAME)
 @CommandParameters(description = "Push people away from you.", usage = "/<command> [radius] [strength]")
 public class Command_expel extends TFM_Command
 {
