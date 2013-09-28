@@ -46,9 +46,9 @@ public class TFM_DonatorList
         {
             donatorList.clear();
 
-            TFM_Util.createDefaultConfiguration(TotalFreedomMod.DONATOR_FILE, TotalFreedomMod.plugin_file);
+            TFM_Util.createDefaultConfiguration(TotalFreedomMod.DONATOR_FILE);
             FileConfiguration config = YamlConfiguration.loadConfiguration(new File(TotalFreedomMod.plugin.getDataFolder(), TotalFreedomMod.DONATOR_FILE));
-
+            
             clean_threshold_hours = config.getInt("clean_threshold_hours", clean_threshold_hours);
 
             if (config.isConfigurationSection("donators"))
