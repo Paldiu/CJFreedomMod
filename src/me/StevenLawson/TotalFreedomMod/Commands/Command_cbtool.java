@@ -28,6 +28,7 @@ public class Command_cbtool extends TFM_Command
 
         if ("targetblock".equalsIgnoreCase(args[0]) && sender instanceof Player)
         {
+            @SuppressWarnings("deprecation")
             Block targetBlock = sender_p.getTargetBlock(null, 100);
             playerMsg("Your target block: " + targetBlock.getLocation().toString());
             return true;
