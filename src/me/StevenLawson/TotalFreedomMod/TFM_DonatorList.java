@@ -46,6 +46,7 @@ public class TFM_DonatorList
         {
             donatorList.clear();
 
+           
             TFM_Util.createDefaultConfiguration(TotalFreedomMod.DONATOR_FILE);
             FileConfiguration config = YamlConfiguration.loadConfiguration(new File(TotalFreedomMod.plugin.getDataFolder(), TotalFreedomMod.DONATOR_FILE));
             
